@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Sponsors</title>
+	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  	<!-- <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet"> -->
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  	<link rel="stylesheet" type="text/css" href="styles/sponsors.css">
+</head>
+<body>
+
+	
+	<h1 class="text-center text-primary">Our Sponsors</h1><br>
+	<div class="container-fluid text-center div-mod ">
+
+		<div id="sponsors-data" class="row div-mod" >
+			
+			
+		</div>		
+	</div>
+	<br>
+	<br>
+	<br>
+	<div id="add-new-div" class="container div-mod well text-center" style="display: none">
+		<input type="button" class="btn btn-primary" id="add-sponsor-btn" value="Add New Sponsor">
+		<br><br>
+		<div id="add-new-sponsor">
+			<label>Sponsor Name</label><br>
+			<input type="text" id="add-sponsor-name"><br>
+			<label>Sponsor Link</label><br>
+			<input type="text" id="add-sponsor-link"><br>
+			<label>Sponsor Logo</label><br>
+			<input type="button" class="btn btn-primary" id="add-sponsor-logo"
+			value="Add sponsor logo" onclick="getSponsorLogo()"><br><br>
+			<input type="button" class="btn btn-primary" id="add-sponsor-save"
+			value="Save" onclick="addSponsorToDatabase()">
+
+		</div>
+	</div>
+
+	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-storage.js"></script>
+
+	<script>
+  		// Initialize Firebase
+  		var config = {
+    	apiKey: "AIzaSyBR3KJwIcHkWjTewBD3A2aaRmFeptykmtk",
+    	authDomain: "events-f6847.firebaseapp.com",
+    	databaseURL: "https://events-f6847.firebaseio.com",
+    	projectId: "events-f6847",
+    	storageBucket: "events-f6847.appspot.com",
+    	messagingSenderId: "1007225187624"
+  		};
+  		firebase.initializeApp(config);
+	</script>
+	<script type="text/javascript" src="scripts/sponsors.js"></script>
+</body>
+</html>
