@@ -1,0 +1,278 @@
+var dbRef;
+var storageRef;
+var sponsorEditData = new Object();
+var valueEventOccured = true;
+var firstTime = true;
+$(document).ready(function () {
+	
+	
+	dbRef = firebase.database().ref().child('sponsors').orderByKey();
+		
+	dbRef.on('value',snap => {
+
+		valueEventOccured = true;
+		$('#sponsors-data').empty();
+		snap.forEach(function (childSnap) {
+			
+			var sponsorId = childSnap.key;			
+			var sponsorClickUrl = childSnap.child('clickUrl').val();
+			var sponsorLogo = childSnap.child('logo').val();
+			var sponsorName = childSnap.child('name').val();
+
+			sponsorEditData[""+sponsorId] = {
+
+				sponsorClickUrl : sponsorClickUrl,
+				sponsorLogo : sponsorLogo,
+				sponsorName : sponsorName,
+				fileLoc : null
+
+			};
+
+
+
+			var template = '<div id="'+sponsorId+'" class="col-lg well-lg bg-1 div-mod ">'
+				+'<h3>Sponsor Name:<span class="sponsor-name">'+sponsorName+'</span></h3>'
+				+'<h3>Sponsor Link:<span class="sponsor-link">'+sponsorClickUrl+'<span></h3>'
+				+'<img src="'+sponsorLogo+'" class="img-responsive img-1 alt="'+sponsorName+'" "><br>'
+				+'<input type="button" class="btn btn-primary" value="Edit" onclick="editSponsor(this.parentNode.id,$(this))">'
+				+'</div>';
+
+			$('#sponsors-data').append($(template));
+		});
+			
+		if(firstTime){
+			$('#add-new-sponsor').hide();
+			var t=1;
+			$('#add-sponsor-btn').click(function () {			
+
+				if(t) {
+					$(this).val("Cancel");
+				} else {
+					$(this).val("Add New Sponsor");
+				}
+				t^=1;
+				$('#add-new-sponsor').fadeToggle();						
+			});
+			$('#add-new-div').show();
+			firstTime = false;	
+		}
+	});
+
+});
+
+function editSponsor(parentId,btnRef) {
+
+	
+	console.log("editSponsor() called");
+	$originalTemplate = $("#"+parentId).clone();
+	$("#" +parentId+" .sponsor-name").replaceWith($('<input class="sponsor-name" type="text" value="'+
+							$("#"+parentId+" .sponsor-name").text()+'" >'));
+	$("#" +parentId+" .sponsor-link").replaceWith($('<input class="sponsor-link" type="text" value="'+
+							$("#"+parentId+" .sponsor-link").text()+'" >'));
+	btnRef.val("Save");
+	$("#"+parentId+" img").after($('<br><input type="button" class="btn btn-secondary" value="Change Image"><br>')
+							.click(function () {
+								console.log("Change image");
+								changeImage($(this),parentId);
+							}));
+	$("#"+parentId).append($('<div class="cancel-btn"><br><br><input type="button" class="btn btn-danger" value="Cancel"></div>')
+					.click(function () {
+						console.log("Cancelled");
+						sponsorEditData[""+parentId].fileLoc = null;
+						$("#"+parentId).replaceWith($originalTemplate);
+						
+						
+						
+					}));
+	btnRef.attr('onclick','saveSponsor(this.parentNode.id,$(this))');
+
+}
+
+function saveSponsor(parentId,btnRef){
+
+	console.log("saveSponsor() called");
+	var storageRef = firebase.storage().ref('sponsors-logo/');
+
+	//Check pre conditions
+	if($("#"+parentId+" .sponsor-name").val() != ""){
+		sponsorEditData[parentId].sponsorName = $("#"+parentId+" .sponsor-name").val();
+		
+	}
+	else {
+		alert("Error : Enter a valid Sponsor name");
+		return;
+	}
+
+	if($("#"+parentId+" .sponsor-link").val() != ""){
+		sponsorEditData[parentId].sponsorClickUrl = $("#"+parentId+" .sponsor-link").val();
+		
+	}
+	else {
+		alert("Error : Enter a valid Sponsor link");
+		return;
+	}
+
+	if(sponsorEditData[parentId].fileLoc == null)
+	{
+		updateDatabase(parentId);
+	}
+	else{
+		//Delete pre-existing logo image file from Firebase Storage
+		var desertRef = firebase.storage().refFromURL(sponsorEditData[parentId].sponsorLogo);
+		desertRef.delete().then(function () {
+			console.log("Older image discarded");
+		}).catch(function (error) {
+			console.error(error);
+		});
+		uploadNewImage(parentId);
+		
+	}
+}
+
+function uploadNewImage(parentId) {
+
+	//Upload new logo to Firebase Storage
+	storageRef = firebase.storage().ref('sponsors-logo/' + 
+									sponsorEditData[parentId].fileLoc.name);
+	var uploadTask = storageRef.put(sponsorEditData[parentId].fileLoc);
+
+	//Update progress bar
+	uploadTask.on('state_changed',
+
+		function progress(snapshot) {
+				
+			var percentage = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
+			$('#prog'+parentId).css('width',percentage+'%');
+			$('#prog'+parentId).attr('aria-valuenow',percentage+'%');
+			$('#prog'+parentId).text(percentage+'%');
+		},
+
+		function error(errorarg) {
+				
+			console.error(errorarg.msg);
+		},
+
+		function complete(argument) {
+
+			console.log("New image uploaded");
+			storageRef.getDownloadURL().then(function (url) {	
+				console.log("New Image URL: "+url);
+				sponsorEditData[parentId].sponsorLogo = url;
+				updateDatabase(parentId);
+			});		
+		}	
+	);
+}
+
+//Update firebase database
+function updateDatabase(parentId) {
+		
+	var dbRef = firebase.database().ref().child("sponsors");
+
+	console.log(dbRef);
+	valueEventOccured = false;
+	dbRef.child(parentId).set({
+
+		clickUrl : sponsorEditData[parentId].sponsorClickUrl,
+		logo : sponsorEditData[parentId].sponsorLogo,
+		name : sponsorEditData[parentId].sponsorName
+
+	},
+	function error(errorArg) {			
+			
+		if(errorArg){
+			console.error(errorArg.msg);
+		} else {
+			console.log("Data updated successfully");
+			if(valueEventOccured == false) {
+				$("#"+parentId+" .cancel-btn").click();
+			}			
+		}
+
+	});
+}
+
+
+function changeImage(changeImageBtnRef,parentId) {
+
+	console.log("changeImage() called 1");
+ 	$("#"+parentId+" .prog-bar").remove();
+ 	var inputFile = $('<input class="inputFile" type="file" >').click(function () {
+		changeImageBtnRef.after($('<div class="prog-bar"><br><br><div class="progress">'+
+								'<div id="prog'+parentId+'" class="progress-bar progress-bar-success" '+
+								'role="progressbar" aria-valuenow="0" aria-valuemin="0" '+
+								'aria-valuemax="100" style="width:0%;">0%'+
+								'</div></div></div>'));
+		
+		$(this).on('change',function (e) {
+			
+			// Get file
+			var file = e.target.files[0];
+			if(file.type.search("image/") === 0) {
+				$("#"+parentId+" img").attr('src',''+URL.createObjectURL(file));
+				sponsorEditData[""+parentId].fileLoc = file;
+				console.log(sponsorEditData);
+			}
+			else {
+				alert("Error : File not an image");
+			}
+		});
+	});
+	inputFile.click();	
+}
+var addLogofile;
+function getSponsorLogo() {
+	
+	var addLogoInput = $('<input type="file">');
+	addLogoInput.change(function (e) {
+		addLogofile =  e.target.files[0];				
+	});
+	addLogoInput.click();
+}
+
+function addSponsorToDatabase() {
+	
+	var addSponsorName = $("#add-sponsor-name").val();
+	var addSponsorLink = $("#add-sponsor-link").val();
+	var addSponsorLogo;
+
+	
+
+	var dbRef = firebase.database().ref().child("sponsors");
+	var newSponsorId = dbRef.push().key;
+
+	var storageRef = firebase.storage().ref('sponsors-logo/' + 
+										addLogofile.name);
+
+	var task = storageRef.put(addLogofile);
+
+	task.on('state_changed',
+
+		function progress(argument) {
+			// body...
+		},
+
+		function error(argument) {
+			// body...
+		},
+
+		function complete(argument) {
+			storageRef.getDownloadURL().then(function (url) {
+				addSponsorLogo = url;
+				dbRef.child(newSponsorId).set(
+					{
+
+						clickUrl : addSponsorLink,
+						logo : addSponsorLogo,
+						name : addSponsorName
+					},
+					function error(errorarg) {
+						if(errorarg){
+							console.error(errorarg.msg);
+						}
+					}
+				);
+			});
+		}
+	);
+}
