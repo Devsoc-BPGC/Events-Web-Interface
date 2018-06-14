@@ -2,19 +2,20 @@ var dbRef;
 var storageRef;
 var sponsorEditData = new Object();
 var valueEventOccured = true;
-var firstTime = true;
+var firstTime = true; /*To run a code segment just once*/
 $(document).ready(function () {
 	
-	
 	dbRef = firebase.database().ref().child('sponsors').orderByKey();
-		
+	
+	/*Implement onchange listener for dbRef */
 	dbRef.on('value',snap => {
 
 		valueEventOccured = true;
 		$('#sponsors-data').empty();
+
 		snap.forEach(function (childSnap) {
 			
-			var sponsorId = childSnap.key;			
+			var sponsorId = childSnap.key;
 			var sponsorClickUrl = childSnap.child('clickUrl').val();
 			var sponsorLogo = childSnap.child('logo').val();
 			var sponsorName = childSnap.child('name').val();
@@ -28,25 +29,26 @@ $(document).ready(function () {
 
 			};
 
-
-
 			var template = '<div id="'+sponsorId+'" class="col-lg well-lg bg-1 div-mod ">'
-				+'<h3>Sponsor Name:<span class="sponsor-name">'+sponsorName+'</span></h3>'
-				+'<h3>Sponsor Link:<span class="sponsor-link">'+sponsorClickUrl+'<span></h3>'
-				+'<img src="'+sponsorLogo+'" class="img-responsive img-1 alt="'+sponsorName+'" "><br>'
-				+'<input type="button" class="btn btn-primary" value="Edit" onclick="editSponsor(this.parentNode.id,$(this))">'
-				+'</div>';
+			+'<h3>Sponsor Name:<span class="sponsor-name">'+sponsorName+'</span></h3>'
+			+'<h3>Sponsor Link:<span class="sponsor-link">'+sponsorClickUrl+'<span></h3>'
+			+'<img src="'+sponsorLogo+'" class="img-responsive img-1 alt="'+sponsorName+'" "><br>'
+			+'<input type="button" class="btn btn-primary" value="Edit" onclick="editSponsor(this.parentNode.id,$(this))">'
+			+'</div>';
 
 			$('#sponsors-data').append($(template));
 		});
 			
+		/*This code must execute only the first time the value event triggers */
 		if(firstTime){
 			$('#add-new-sponsor').hide();
 			var t=1;
 			$('#add-sponsor-btn').click(function () {			
 
 				if(t) {
+
 					$(this).val("Cancel");
+					
 				} else {
 					$(this).val("Add New Sponsor");
 				}
@@ -56,7 +58,12 @@ $(document).ready(function () {
 			$('#add-new-div').show();
 			firstTime = false;	
 		}
-	});
+	},
+		function error(dberror) {
+			console.error(dberror);
+		}
+	);
+	
 
 });
 
@@ -75,10 +82,32 @@ function editSponsor(parentId,btnRef) {
 								console.log("Change image");
 								changeImage($(this),parentId);
 							}));
-	$("#"+parentId).append($('<div class="cancel-btn"><br><br><input type="button" class="btn btn-danger" value="Cancel"></div>')
+
+	$("#"+parentId).append($('<div class="delete-sponsor"><br><br>'+
+	'<input type="button" class="btn btn-danger" value="Delete Sponsor"></div>')
+					.click(function () {
+						console.log("Deleted");
+						var desertRef = firebase.storage().refFromURL(sponsorEditData[parentId].sponsorLogo);
+						desertRef.delete().then(function () {
+							deleteFromDatabase();							
+						})
+						.catch(function (error) {
+							console.error(error);
+						});
+						function deleteFromDatabase() {
+							var dbRef = firebase.database().ref()
+								.child("sponsors")
+								.child(parentId);
+							dbRef.remove(function () {
+								delete sponsorEditData[parentId];
+							});							
+						}
+					}));
+
+	$("#"+parentId).append($('<div class="cancel-btn"><br><input type="button" class="btn btn-danger" value="Cancel"></div>')
 					.click(function () {
 						console.log("Cancelled");
-						sponsorEditData[""+parentId].fileLoc = null;
+						sponsorEditData[parentId].fileLoc = null;
 						$("#"+parentId).replaceWith($originalTemplate);
 						
 						
@@ -149,7 +178,7 @@ function uploadNewImage(parentId) {
 
 		function error(errorarg) {
 				
-			console.error(errorarg.msg);
+			console.error(errorarg);
 		},
 
 		function complete(argument) {
@@ -181,7 +210,7 @@ function updateDatabase(parentId) {
 	function error(errorArg) {			
 			
 		if(errorArg){
-			console.error(errorArg.msg);
+			console.error(errorArg);
 		} else {
 			console.log("Data updated successfully");
 			if(valueEventOccured == false) {
@@ -220,23 +249,50 @@ function changeImage(changeImageBtnRef,parentId) {
 	});
 	inputFile.click();	
 }
-var addLogofile;
+var addLogofile = null;
 function getSponsorLogo() {
 	
 	var addLogoInput = $('<input type="file">');
 	addLogoInput.change(function (e) {
-		addLogofile =  e.target.files[0];				
+
+		addLogofile =  e.target.files[0];
+		if (addLogofile.type.search("image/") === 0) {
+			
+			$("#add-sponsor-preview").attr('src',URL.createObjectURL(addLogofile)).show();
+		} else {
+			alert("Error: File not an image");
+			addLogofile = null;
+		}	
 	});
-	addLogoInput.click();
+
+	addLogoInput.click();		
 }
 
 function addSponsorToDatabase() {
 	
-	var addSponsorName = $("#add-sponsor-name").val();
-	var addSponsorLink = $("#add-sponsor-link").val();
+	var addSponsorName; 
+	var addSponsorLink; 
 	var addSponsorLogo;
 
-	
+	if ($("#add-sponsor-name").val()) {
+	 addSponsorName = $("#add-sponsor-name").val();
+	} else {
+		alert("Error : Enter a valid Sponsor name");
+		return;
+	}
+
+	if ($("#add-sponsor-link").val()) {
+		addSponsorLink = $("#add-sponsor-link").val();
+	} else {
+		alert("Error : Enter a valid Sponsor link");
+		return;
+	}
+
+	if (addLogofile == null) {
+		alert("Error : Upload a valid Sponsor Logo");
+		return;
+	}
+
 
 	var dbRef = firebase.database().ref().child("sponsors");
 	var newSponsorId = dbRef.push().key;
@@ -248,8 +304,12 @@ function addSponsorToDatabase() {
 
 	task.on('state_changed',
 
-		function progress(argument) {
-			// body...
+		function progress(snapshot) {
+			$("#save-sponsor-progress-bar").show();
+			var percentage = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
+			$('#uploader').css('width',percentage+'%');
+			$('#uploader').attr('aria-valuenow',percentage+'%');
+			$('#uploader').text(percentage+'%');
 		},
 
 		function error(argument) {
@@ -268,7 +328,18 @@ function addSponsorToDatabase() {
 					},
 					function error(errorarg) {
 						if(errorarg){
-							console.error(errorarg.msg);
+							console.error(errorarg);
+						} else {
+
+								//Resetting Add new Sponsor
+								$('#add-sponsor-btn').click();
+								$('#save-sponsor-progress-bar').hide();
+								$('#add-sponsor-preview').hide();
+								$('#add-sponsor-name').val("");
+								$('add-sponsor-link').val("");
+								addLogofile = null;
+
+
 						}
 					}
 				);
