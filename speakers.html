@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Speakers</title>
+	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  	<link rel="stylesheet" type="text/css" href="styles/speakers.css">
+</head>
+<body>
+
+
+	<h1 class="text-center text-primary">Our speakers</h1><br>
+
+	<!--Edit speaker-->
+
+	<div class="container-fluid text-center div-mod ">
+
+		<!--'speakers-data' div fills with the speakers retrieved from firebase database in real-time-->
+		<div id="speakers-data" class="row div-mod" >
+
+		</div>
+	</div>
+
+	<br>
+	<br>
+	<br>
+
+	<!-- Add speaker-->
+
+	<div id="add-new-div" class="container div-mod well text-center" style="display: none;">
+		<input type="button" class="btn btn-primary" id="add-speaker-btn" value="Add New speaker">
+		<br><br>
+		<div id="add-new-speaker">
+			<label>Speaker Name</label><br>
+			<input type="text" id="add-speaker-name"><br>
+      <label>Speaker Description</label><br>
+			<input type="text" id="add-speaker-desc"><br>
+			<label>Speaker Link</label><br>
+			<input type="text" id="add-speaker-link"><br>
+			<label>Speaker Logo</label><br>
+			<input type="button" class="btn btn-primary" id="add-speaker-logo"
+			value="Add speaker logo" onclick="getSpeakerLogo()"><br><br>
+			<img id="add-speaker-preview" class="img-responsive img-1" src="" alt="speaker Logo" style="display: none;"><br><br>
+			<div id="save-speaker-progress-bar" class="progress" style="display: none;">
+  				<div id="uploader" class="progress-bar progress-bar-success"
+  				role="progressbar" aria-valuenow="0"aria-valuemin="0" aria-valuemax="100" style="width:0%">0%
+  				</div>
+		  	</div>
+			<br>
+			<input type="button" class="btn btn-primary" id="add-speaker-save"
+			value="Save" onclick="addSpeakerToDatabase()">
+		</div>
+	</div>
+
+	<!-- firebase-app.js is mandatory -->
+	<!-- Include the others as required-->
+	<!--NOTE: This part must come before any user defined scripts-->
+	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-storage.js"></script>
+	<script>
+  		// Initialize Firebase
+  		var config = {
+    	apiKey: "AIzaSyBR3KJwIcHkWjTewBD3A2aaRmFeptykmtk",
+    	authDomain: "events-f6847.firebaseapp.com",
+    	databaseURL: "https://events-f6847.firebaseio.com",
+    	projectId: "events-f6847",
+    	storageBucket: "events-f6847.appspot.com",
+    	messagingSenderId: "1007225187624"
+  		};
+  		firebase.initializeApp(config);
+	</script>
+
+	<!--Include user defined scripts here-->
+	<script type="text/javascript" src="scripts/speakers.js"></script>
+</body>
+</html>

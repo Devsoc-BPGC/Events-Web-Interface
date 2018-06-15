@@ -1,0 +1,30 @@
+p{
+	font-size: 16px;
+}
+
+span{
+	color:blue;
+}
+
+.div-mod{
+	float: left;
+	margin: 20px;
+}
+.margin {
+	margin-bottom: 45px;
+}
+
+.bg-1{
+	background-color: grey;
+	display: inline-block;
+}
+
+.txt-1{
+	color:black;
+}
+
+.img-1{
+	width: 120px;
+	height: 120px;
+	margin: 0 auto;
+}
