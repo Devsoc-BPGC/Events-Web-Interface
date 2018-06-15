@@ -5,13 +5,13 @@ var valueEventOccured = true;
 var firstTime = true; /*To run a code segment just once*/
 $(document).ready(function () {
 
-	dbRef = firebase.database().ref().child('speakers').orderByKey();
+	dbRef = firebase.database().ref().child("speakers").orderByKey();
 
 	/*Implement onchange listener for dbRef */
-	dbRef.on('value',snap => {
+	dbRef.on("value",snap => {
 
 		valueEventOccured = true;
-		$('#speakers-data').empty();
+		$("#speakers-data").empty();
 
 		snap.forEach(function (childSnap) {
 
@@ -37,7 +37,7 @@ $(document).ready(function () {
 			+'<h3>Speaker Link:<span class="speaker-link">'+speakerClickUrl+'<span></h3>'
 			+'<img src="'+speakerLogo+'" class="img-responsive img-1 alt="'+speakerName+'" "><br>'
 			+'<input type="button" class="btn btn-primary" value="Edit" onclick="editSpeaker(this.parentNode.id,$(this))">'
-			+'</div>';
+			+"</div>";
 
 			$('#speakers-data').append($(template));
 		});
@@ -359,7 +359,7 @@ function addSpeakerToDatabase() {
 								$('#add-speaker-preview').hide();
 								$('#add-speaker-name').val("");
                 $('#add-speaker-desc').val("");
-								$('#add-speaker-link').val("");
+								$('#add-speaker-link").val("");
 								addLogofile = null;
 
 
