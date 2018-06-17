@@ -359,7 +359,7 @@ function addSpeakerToDatabase() {
 								$('#add-speaker-preview').hide();
 								$('#add-speaker-name').val("");
                 $('#add-speaker-desc').val("");
-								$('#add-speaker-link").val("");
+								$("#add-speaker-link").val("");
 								addLogofile = null;
 
 
