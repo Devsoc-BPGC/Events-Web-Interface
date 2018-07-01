@@ -1,3 +1,5 @@
+//ESLINT rules 
+/*global toastr firebase*/
 var dbRef;
 var storageRef;
 var sponsorEditData = new Object();
@@ -21,7 +23,7 @@ $(document).ready(function () {
 			var sponsorLogo = childSnap.child("logo").val();
 			var sponsorName = childSnap.child("name").val();
 
-			sponsorEditData[''+sponsorId] = {
+			sponsorEditData[sponsorId] = {
 
 				sponsorClickUrl : sponsorClickUrl,
 				sponsorLogo : sponsorLogo,
@@ -48,10 +50,10 @@ $(document).ready(function () {
 
 				if(t) {
 
-					$(this).val('Cancel');
+					$(this).val("Cancel");
 					
 				} else {
-					$(this).val('Add New Sponsor');
+					$(this).val("Add New Sponsor");
 				}
 				t^=1;
 				$("#add-new-sponsor").fadeToggle();						
@@ -71,19 +73,19 @@ $(document).ready(function () {
 function editSponsor(parentId,btnRef) {
 
 	
-	$originalTemplate = $('#'+parentId).clone();
-	$('#' +parentId+' .sponsor-name').replaceWith($("<input class='sponsor-name' type='text' value='"+
-							$('#'+parentId+' .sponsor-name').text()+"' >"));
-	$('#' +parentId+' .sponsor-link').replaceWith($("<input class='sponsor-link' type='text' value='"+
-							$('#'+parentId+' .sponsor-link').text()+"' >"));
-	btnRef.val('Save');
-	$('#'+parentId+' img').after($("<br><input type='button' class='btn btn-secondary' value='Change Image'><br>")
+	$originalTemplate = $("#"+parentId).clone();
+	$("#" +parentId+" .sponsor-name").replaceWith($("<input class='sponsor-name' type='text' value='"+
+							$("#"+parentId+" .sponsor-name").text()+"' >"));
+	$("#" +parentId+" .sponsor-link").replaceWith($("<input class='sponsor-link' type='text' value='"+
+							$("#"+parentId+" .sponsor-link").text()+"' >"));
+	btnRef.val("Save");
+	$("#"+parentId+" img").after($("<br><input type='button' class='btn btn-secondary' value='Change Image'><br>")
 							.click(function () {
 								//Change image
 								changeImage($(this),parentId);
 							}));
 
-	$('#'+parentId).append($("<div class='delete-sponsor'><br><br>"+
+	$("#"+parentId).append($("<div class='delete-sponsor'><br><br>"+
 	"<input type='button' class='btn btn-danger' value='Delete Sponsor'></div>")
 					.click(function () {
 						
@@ -96,7 +98,7 @@ function editSponsor(parentId,btnRef) {
 						});
 						function deleteFromDatabase() {
 							var dbRef = firebase.database().ref()
-								.child('sponsors')
+								.child("sponsors")
 								.child(parentId);
 							dbRef.remove(function () {
 								delete sponsorEditData[parentId];
@@ -104,11 +106,11 @@ function editSponsor(parentId,btnRef) {
 						}
 					}));
 
-	$('#'+parentId).append($("<div class='cancel-btn'><br><input type='button' class='btn btn-danger' value='Cancel'></div>")
+	$("#"+parentId).append($("<div class='cancel-btn'><br><input type='button' class='btn btn-danger' value='Cancel'></div>")
 					.click(function () {
 						
 						sponsorEditData[parentId].fileLoc = null;
-						$('#'+parentId).replaceWith($originalTemplate);
+						$("#"+parentId).replaceWith($originalTemplate);
 						
 						
 						
@@ -123,21 +125,21 @@ function saveSponsor(parentId,btnRef){
 	var storageRef = firebase.storage().ref("sponsors-logo/");
 
 	//Check pre conditions
-	if($('#'+parentId+' .sponsor-name').val() != ''){
-		sponsorEditData[parentId].sponsorName = $('#'+parentId+' .sponsor-name').val();
+	if($("#"+parentId+" .sponsor-name").val() != ""){
+		sponsorEditData[parentId].sponsorName = $("#"+parentId+" .sponsor-name").val();
 		
 	}
 	else {
-		alert('Error : Enter a valid Sponsor name');
+		alert("Error : Enter a valid Sponsor name");
 		return;
 	}
 
-	if($('#'+parentId+' .sponsor-link').val() != ''){
-		sponsorEditData[parentId].sponsorClickUrl = $('#'+parentId+' .sponsor-link').val();
+	if($("#"+parentId+" .sponsor-link").val() != ""){
+		sponsorEditData[parentId].sponsorClickUrl = $("#"+parentId+" .sponsor-link").val();
 		
 	}
 	else {
-		alert('Error : Enter a valid Sponsor link');
+		alert("Error : Enter a valid Sponsor link");
 		return;
 	}
 
@@ -197,7 +199,7 @@ function uploadNewImage(parentId) {
 //Update firebase database
 function updateDatabase(parentId) {
 		
-	var dbRef = firebase.database().ref().child('sponsors');
+	var dbRef = firebase.database().ref().child("sponsors");
 
 	
 	valueEventOccured = false;
@@ -215,7 +217,7 @@ function updateDatabase(parentId) {
 		} else {
 			//Data updated successfully
 			if(valueEventOccured == false) {
-				$('#'+parentId+' .cancel-btn').click();
+				$("#"+parentId+" .cancel-btn").click();
 			}			
 		}
 
@@ -225,7 +227,7 @@ function updateDatabase(parentId) {
 
 function changeImage(changeImageBtnRef,parentId) {
 
-	$('#'+parentId+' .prog-bar').remove();
+	$("#"+parentId+" .prog-bar").remove();
  	var inputFile = $("<input class='inputFile' type='file' >").click(function () {
 		changeImageBtnRef.after($("<div class='prog-bar'><br><br><div class='progress'>"+
 								"<div id='prog"+parentId+"' class='progress-bar progress-bar-success' "+
@@ -237,13 +239,13 @@ function changeImage(changeImageBtnRef,parentId) {
 			
 			// Get file
 			var file = e.target.files[0];
-			if(file.type.search('image/') === 0) {
-				$('#'+parentId+' img').attr("src",""+URL.createObjectURL(file));
-				sponsorEditData[''+parentId].fileLoc = file;
+			if(file.type.search("image/") === 0) {
+				$("#"+parentId+" img").attr("src",""+URL.createObjectURL(file));
+				sponsorEditData[parentId].fileLoc = file;
 				
 			}
 			else {
-				alert('Error : File not an image');
+				alert("Error : File not an image");
 			}
 		});
 	});
@@ -256,11 +258,11 @@ function getSponsorLogo() {
 	addLogoInput.change(function (e) {
 
 		addLogofile =  e.target.files[0];
-		if (addLogofile.type.search('image/') === 0) {
+		if (addLogofile.type.search("image/") === 0) {
 			
-			$('#add-sponsor-preview').attr("src",URL.createObjectURL(addLogofile)).show();
+			$("#add-sponsor-preview").attr("src",URL.createObjectURL(addLogofile)).show();
 		} else {
-			alert('Error: File not an image');
+			alert("Error: File not an image");
 			addLogofile = null;
 		}	
 	});
@@ -274,27 +276,27 @@ function addSponsorToDatabase() {
 	var addSponsorLink; 
 	var addSponsorLogo;
 
-	if ($('#add-sponsor-name').val()) {
-	 addSponsorName = $('#add-sponsor-name').val();
+	if ($("#add-sponsor-name").val()) {
+	 addSponsorName = $("#add-sponsor-name").val();
 	} else {
-		alert('Error : Enter a valid Sponsor name');
+		alert("Error : Enter a valid Sponsor name");
 		return;
 	}
 
-	if ($('#add-sponsor-link').val()) {
-		addSponsorLink = $('#add-sponsor-link').val();
+	if ($("#add-sponsor-link").val()) {
+		addSponsorLink = $("#add-sponsor-link").val();
 	} else {
-		alert('Error : Enter a valid Sponsor link');
+		alert("Error : Enter a valid Sponsor link");
 		return;
 	}
 
 	if (addLogofile == null) {
-		alert('Error : Upload a valid Sponsor Logo');
+		alert(Error : Upload a valid Sponsor Logo);
 		return;
 	}
 
 
-	var dbRef = firebase.database().ref().child('sponsors');
+	var dbRef = firebase.database().ref().child("sponsors");
 	var newSponsorId = dbRef.push().key;
 
 	var storageRef = firebase.storage().ref("sponsors-logo/" + 
@@ -305,18 +307,18 @@ function addSponsorToDatabase() {
 	task.on("state_changed",
 
 		function progress(snapshot) {
-			$('#save-sponsor-progress-bar').show();
+			$("#save-sponsor-progress-bar").show();
 			var percentage = (snapshot.bytesTransferred/snapshot.totalBytes)*100;
 			$("#uploader").css("width",percentage+"%");
 			$("#uploader").attr("aria-valuenow",percentage+"%");
 			$("#uploader").text(percentage+"%");
 		},
 
-		function error(argument) {
+		function error(error) {
 			// body...
 		},
 
-		function complete(argument) {
+		function complete(event) {
 			storageRef.getDownloadURL().then(function (url) {
 				addSponsorLogo = url;
 				dbRef.child(newSponsorId).set(
@@ -335,8 +337,8 @@ function addSponsorToDatabase() {
 								$("#add-sponsor-btn").click();
 								$("#save-sponsor-progress-bar").hide();
 								$("#add-sponsor-preview").hide();
-								$("#add-sponsor-name").val('');
-								$("add-sponsor-link").val('');
+								$("#add-sponsor-name").val("");
+								$("add-sponsor-link").val("");
 								addLogofile = null;
 
 

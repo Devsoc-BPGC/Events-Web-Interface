@@ -7,8 +7,8 @@
     padding: 0.5rem;
     margin: 0.2rem;
     border-radius: 2rem;
-    background-color: #3f729b !important;
-    color: #1c2331 !important;
+    background-color: #3f729b ;
+    color: #1c2331 ;
 }
 
 .preview-img {
@@ -23,5 +23,5 @@
 
 	color: #db4437 ;
 	display: none;
-	/*text-align: left !important;*/
+	
 }

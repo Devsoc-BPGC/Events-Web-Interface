@@ -1,26 +1,27 @@
 "use strict";
+//ESLINT rules 
+/*global toastr firebase*/
 var $editEventTemplate;
-var firebase;
 var selectImageFile = null;
 var tempEditEventKey = null;
 function getTimelineEvents(data) {
 	
-	var dbRef = firebase.database().ref().child('timeline');
+	var dbRef = firebase.database().ref().child("timeline");
 
 	/*Implement onchange listener for timeline node
 	and return a Promise */
-	return dbRef.once('value').then((snapshot) => {
+	return dbRef.once("value").then((snapshot) => {
 
 		snapshot.forEach(function (childSnapshot) {
  
 			var id = childSnapshot.key;
-			var type = childSnapshot.child('eventType').val();
-			var desc = childSnapshot.child('description').val();
-			var eventName = childSnapshot.child('name').val();
-			var img = childSnapshot.child('imageUrl').val();
-			var rulebook = childSnapshot.child('ruleBookUrl').val();
-			var eventCat = childSnapshot.child('category').val();
-			var eventDays = childSnapshot.child('days').val();
+			var type = childSnapshot.child("eventType").val();
+			var desc = childSnapshot.child("description").val();
+			var eventName = childSnapshot.child("name").val();
+			var img = childSnapshot.child("imageUrl").val();
+			var rulebook = childSnapshot.child("ruleBookUrl").val();
+			var eventCat = childSnapshot.child("category").val();
+			var eventDays = childSnapshot.child("days").val();
 
 			data[id] = {
 				category : eventCat,
@@ -42,20 +43,20 @@ function getTimelineEvents(data) {
 
 function clearModal() {
 
-	$('#header-event-modal').text('Add New Event');
-	$('#modal-event input').val("").focusout();
-	$('#modal-event textarea').val("").focusout();
-	$('#modal-event textarea').attr('rows','2');
-	$('.modal-body .close').click();
-	$('#img-event-select-image-preview').hide();
-	$('#img-event-select-image-preview').removeAttr('src');
+	$("#header-event-modal").text("Add New Event");
+	$("#modal-event input").val("").focusout();
+	$("#modal-event textarea").val("").focusout();
+	$("#modal-event textarea").attr("rows","2");
+	$(".modal-body .close").click();
+	$("#img-event-select-image-preview").hide();
+	$("#img-event-select-image-preview").removeAttr("src");
 	selectImageFile = null;
 	tempEditEventKey = null;	
 }
 
 function deleteEvent(key,imageUrl) {
 	
-	var dbRef = firebase.database().ref('/timeline/').child(key);
+	var dbRef = firebase.database().ref("/timeline/").child(key);
 	var desertRef = firebase.storage().refFromURL(imageUrl);
 	return desertRef.delete().then(function () {
 		return dbRef.remove();
@@ -69,24 +70,24 @@ function editEvents(event) {
 
 	clearModal();
 	tempEditEventKey = key;
-	$('#header-event-modal').text('Edit event : '+key);
-	$('#input-add-event-name').val(value.name);
-	$('#input-add-event-type').val(value.eventType);
-	$('#input-add-event-desc').val(value.description);
-	$('#input-add-event-rulebook').val(value.ruleBookUrl);
+	$("#header-event-modal").text("Edit event : "+key);
+	$("#input-add-event-name").val(value.name);
+	$("#input-add-event-type").val(value.eventType);
+	$("#input-add-event-desc").val(value.description);
+	$("#input-add-event-rulebook").val(value.ruleBookUrl);
 	value.category.forEach(function (element) {
-		$('#input-add-event-category').val(element);
-		$('#btn-add-category').click();
+		$("#input-add-event-category").val(element);
+		$("#btn-add-category").click();
 	});
 	value.days.forEach(function (element,daynum) {
-		$('#input-add-event-day-daynum').val(daynum);
-		$('#input-add-event-day-session').val(element.session);
-		$('#input-add-event-day-time').val(element.time);
-		$('#input-add-event-day-venue').val(element.venue);
-		$('#btn-add-day').click();
+		$("#input-add-event-day-daynum").val(daynum);
+		$("#input-add-event-day-session").val(element.session);
+		$("#input-add-event-day-time").val(element.time);
+		$("#input-add-event-day-venue").val(element.venue);
+		$("#btn-add-day").click();
 	});
-	$('#img-event-select-image-preview').attr('src',value.imageUrl).show();
-	$('#btn-add-new-event').click();
+	$("#img-event-select-image-preview").attr("src",value.imageUrl).show();
+	$("#btn-add-new-event").click();
 }
 
 async function displayEvents() {
@@ -95,7 +96,7 @@ async function displayEvents() {
 	var errcounter1 = 0;
 	//Retrieve data from firebase database
 	await getTimelineEvents(data).catch((err) => {
-		toastr.warning('Error fetching data...Retrying...');
+		toastr.warning("Error fetching data...Retrying...");
 		errcounter1++;
 		if (errcounter1 < 6) {
 			setTimeout(displayEvents,5000);
@@ -105,112 +106,112 @@ async function displayEvents() {
 		}
 	});
 
-	$('#container-edit-events').empty();
+	$("#container-edit-events").empty();
 
 	$.each(data,function (key,value) {
-	  	
-	  	var newEventTemplate = $($editEventTemplate.clone().html());
-	  	newEventTemplate.attr('id','card-edit-event'+key);
-	  	newEventTemplate.find('.event-name').text(value.name);
-	  	newEventTemplate.find('.event-type').text(value.eventType);
-	  	newEventTemplate.find('.event-desc').text(value.description);
-	  	newEventTemplate.find('.event-rulebook').attr('href',value.ruleBookUrl)
-	  											.text(value.ruleBookUrl);	  											
-	  	newEventTemplate.find('.card-img-top').attr('src',value.imageUrl);
 
-	  	value.category.forEach(function (element) {
-	  		var $newCatList = $('<li class="list-group-item">'+element+'</li>');
-	  		newEventTemplate.find('.event-category').append($newCatList);
-	  	});
+		var newEventTemplate = $($editEventTemplate.clone().html());
+		newEventTemplate.attr("id","card-edit-event"+key);
+		newEventTemplate.find(".event-name").text(value.name);
+		newEventTemplate.find(".event-type").text(value.eventType);
+		newEventTemplate.find(".event-desc").text(value.description);
+		newEventTemplate.find(".event-rulebook").attr("href",value.ruleBookUrl)
+												.text(value.ruleBookUrl);												
+		newEventTemplate.find(".card-img-top").attr("src",value.imageUrl);
 
-	  	value.days.forEach(function (element,index) {
-	  		var $newDayList = $('<li class="list-group-item">Day '
-	  			+index+':&emsp;'+element.session+'&emsp;'
-	  			+element.time+'&emsp;'+element.venue
-	  			+'</li>'
-	  		);
-	  		newEventTemplate.find('.event-days').append($newDayList);
-	  	});
+		value.category.forEach(function (element) {
+			var $newCatList = $("<li class='list-group-item'>"+element+"</li>");
+			newEventTemplate.find(".event-category").append($newCatList);
+		});
 
-	  	newEventTemplate.find('.delete-btn').off('click')
-	  	.on('click',{eventKey:key,eventImg:value.imageUrl},
-	  	async function (event) {
-	  		$(this).addClass('disabled');
-	  		await deleteEvent(event.data.eventKey,event.data.eventImg)
-	  		.catch((err) => {
-	  			toastr.error(err.message);
-	  			//return;
-	  		}); 
-	  		$('#card-edit-event'+key).remove();
-	  		delete data[key]; 		
-	  	});
+		value.days.forEach(function (element,index) {
+			var $newDayList = $("<li class='list-group-item'>Day "
+				+index+":&emsp;"+element.session+"&emsp;"
+				+element.time+"&emsp;"+element.venue
+				+"</li>"
+			);
+			newEventTemplate.find(".event-days").append($newDayList);
+		});
 
-	  	newEventTemplate.find('.edit-btn').off('click')
-	  	.on('click',{eventkey:key,eventvalue:value},function (event) {
-	  		editEvents(event);
-	  	});
+		newEventTemplate.find(".delete-btn").off("click")
+		.on("click",{eventKey:key,eventImg:value.imageUrl},
+		async function (event) {
+			$(this).addClass("disabled");
+			await deleteEvent(event.data.eventKey,event.data.eventImg)
+			.catch((err) => {
+				toastr.error(err.message);
+				//return;
+			}); 
+			$("#card-edit-event"+key).remove();
+			delete data[key]; 		
+		});
 
-	  	$('#container-edit-events').append(newEventTemplate);
+		newEventTemplate.find(".edit-btn").off("click")
+		.on("click",{eventkey:key,eventvalue:value},function (event) {
+			editEvents(event);
+		});
+
+		$("#container-edit-events").append(newEventTemplate);
 
 	});	
 }
 
 function addEventModalValidation(data) {
 
-	var addEventName = $('#input-add-event-name').val();
-	var addEventType = $('#input-add-event-type').val();
-	var addEventDesc = $('#input-add-event-desc').val();
-	var addEventRulebook = $('#input-add-event-rulebook').val();
+	var addEventName = $("#input-add-event-name").val();
+	var addEventType = $("#input-add-event-type").val();
+	var addEventDesc = $("#input-add-event-desc").val();
+	var addEventRulebook = $("#input-add-event-rulebook").val();
 	var addEventCategory = {};
-	$('#container-new-category .span-category').each(function (index,element) {
+	$("#container-new-category .span-category").each(function (index,element) {
 		addEventCategory[index] = $(element).text();
 	});
 	var addEventDays = {};
-	$('#container-new-day .div-day').each(function (key,element) {
-		let index = $(element).find('.span-daynum').text();
+	$("#container-new-day .div-day").each(function (key,element) {
+		let index = $(element).find(".span-daynum").text();
 		addEventDays[index] = {};
-		addEventDays[index]['session'] = $(element).find('.span-session').text();
-		addEventDays[index]['time'] = $(element).find('.span-time').text();
-		addEventDays[index]['venue'] = $(element).find('.span-venue').text();
+		addEventDays[index]["session"] = $(element).find(".span-session").text();
+		addEventDays[index]["time"] = $(element).find(".span-time").text();
+		addEventDays[index]["venue"] = $(element).find(".span-venue").text();
 	});
 	var addEventImageFile = selectImageFile;
 	var isValid = true;
 	if (!addEventName||!addEventType||!addEventDesc||!addEventRulebook) {
 
-		toastr.error('Null entry');
+		toastr.error("Null entry");
 		isValid = false;
 	}
 	if ($.isEmptyObject(addEventCategory)) {
-		toastr.warning('No "Categories" entered');
+		toastr.warning("No 'Categories' entered");
 		isValid = false;
 	}
 	if($.isEmptyObject(addEventDays)) {
-		toastr.warning('No "Days" entered');
+		toastr.warning("No 'Days' entered");
 		isValid = false;
 	}
 	if (!addEventImageFile&&!tempEditEventKey) {
-		toastr.warning('No Event Image');
+		toastr.warning("No Event Image");
 		isValid = false;
 	}
 	if (!isValid) {
 		data = null;
 	} else {
-		data['name'] = addEventName;
-		data['eventType'] = addEventType;
-		data['description'] = addEventDesc;
-		data['ruleBookUrl'] = addEventRulebook;
-		data['category'] = addEventCategory;
-		data['days'] = addEventDays;
-		data['eventImageFile'] = addEventImageFile;
-		data['imageUrl'] = null;
-		data['eventId'] = null;
+		data["name"] = addEventName;
+		data["eventType"] = addEventType;
+		data["description"] = addEventDesc;
+		data["ruleBookUrl"] = addEventRulebook;
+		data["category"] = addEventCategory;
+		data["days"] = addEventDays;
+		data["eventImageFile"] = addEventImageFile;
+		data["imageUrl"] = null;
+		data["eventId"] = null;
 	}
 	return isValid;
 }
 
 function uploadToDatabase(data) {
 	
-	var dbRef = firebase.database().ref().child('timeline');
+	var dbRef = firebase.database().ref().child("timeline");
 
 	// (tempEditEventKey != null) => editEvent
 	if (tempEditEventKey == null) {
@@ -224,15 +225,15 @@ function uploadToDatabase(data) {
 			toastr.error(result.message);
 		} else {
 			displayEvents();
-			$('#spinner-add-event-upload').fadeOut();
+			$("#spinner-add-event-upload").fadeOut();
 			if (!tempEditEventKey) {
-				toastr.success('Event added to timeline');
+				toastr.success("Event added to timeline");
 				clearModal();			
 
 			} else {
-				toastr.success('Event edit successful');
+				toastr.success("Event edit successful");
 				clearModal();
-				$('#btn-close-modal').click();
+				$("#btn-close-modal").click();
 			}						
 		}
 
@@ -242,9 +243,9 @@ function uploadToDatabase(data) {
 function insertEventToDatabase(data) {
 	
 	//For Edit Event
-	if (tempEditEventKey!=null) {
+	if (tempEditEventKey!=null && selectImageFile==null) {
 		delete data.eventImageFile;
-		data.imageUrl = $('#img-event-select-image-preview').attr('src');
+		data.imageUrl = $("#img-event-select-image-preview").attr("src");
 		uploadToDatabase(data);
 		return;
 	}
@@ -255,7 +256,7 @@ function insertEventToDatabase(data) {
 											+Date.now()); 
 
 	var uploadTask = storageRef.put(data.eventImageFile);
-	$('#spinner-add-event-upload').css('color','#4285f4');
+	$("#spinner-add-event-upload").css("color","#4285f4");
 	uploadTask.on("state_changed",
 
 		function progress(snapshot) {
@@ -271,7 +272,7 @@ function insertEventToDatabase(data) {
 			/**New image uploaded**/
 
 			//Get download url
-			$('#spinner-add-event-upload').css('color','#0f9d58');
+			$("#spinner-add-event-upload").css("color","#0f9d58");
 			storageRef.getDownloadURL().then(function (url) {	
 				
 				data.imageUrl = url;
@@ -288,46 +289,46 @@ function insertEventToDatabase(data) {
 function addNewEventModalInit() {
 
 	//Add close btn listener
-	$('#btn-close-modal').click(function () {
+	$("#btn-close-modal").click(function () {
 		
 		if (tempEditEventKey) {
-			toastr.warning('Edit event job terminated');
+			toastr.warning("Edit event job terminated");
 			clearModal();
 		}
 	});
 
-	//Add 'new category' listeners
-	$('#btn-add-category').click(function () {
-		if (!$('#input-add-event-category').val()) {
+	//Add "new category" listeners
+	$("#btn-add-category").click(function () {
+		if (!$("#input-add-event-category").val()) {
 			toastr.warning("Null entry!!");
 			return;
 		}
-		var $newCategory = $('<div class="chip-custom div-category">'
-		+'<span class="span-category">'
-		+$('#input-add-event-category').val()+'</span>&nbsp;'
-		+'<i class="close fa fa-times red-text"></i>'
-		+'</div>');
+		var $newCategory = $("<div class='chip-custom div-category'>"
+		+"<span class='span-category'>"
+		+$("#input-add-event-category").val()+"</span>&nbsp;"
+		+"<i class='close fa fa-times red-text'></i>"
+		+"</div>");
 		
-		$('#container-new-category').append($newCategory.on('click','.close',
+		$("#container-new-category").append($newCategory.on("click",".close",
 			function () {
 				$(this).parent().remove();
 			}
 		));
-		$('#input-add-event-category').val("");
+		$("#input-add-event-category").val("");
 		
 
 	});
 
-	//Add 'new day' listeners
+	//Add "new day" listeners
 	var dayCheck = [];
-	$('#btn-add-day').click(function () {
+	$("#btn-add-day").click(function () {
 
-		let eventTime = $('#input-add-event-day-time').val();
-		eventTime = eventTime.padStart(4,'0');
+		let eventTime = $("#input-add-event-day-time").val();
+		eventTime = eventTime.padStart(4,"0");
 
-		let dayIndex = $('#input-add-event-day-daynum').val();
-		if (dayIndex==""||!$('#input-add-event-day-session').val()
-		||!eventTime||!$('#input-add-event-day-venue').val()) {
+		let dayIndex = $("#input-add-event-day-daynum").val();
+		if (dayIndex===""||!$("#input-add-event-day-session").val()
+		||!eventTime||!$("#input-add-event-day-venue").val()) {
 			toastr.warning("Null entry!!");
 			return;
 		}
@@ -346,7 +347,7 @@ function addNewEventModalInit() {
 			return;
 		} 
 
-		if (dayCheck.indexOf(dayIndex) == -1) {
+		if (dayCheck.indexOf(dayIndex) === -1) {
 			dayCheck[dayIndex] = dayIndex;
 		} else {
 			toastr.warning("Duplicate day entry");
@@ -355,53 +356,53 @@ function addNewEventModalInit() {
 
 		
 
-		var $newDay = $('<div class="chip-custom div-day">'
-		+'Day '+'<span class="span-daynum">'
-		+dayIndex+'</span>:&emsp;'
-		+'<span class="span-session">'
-		+$('#input-add-event-day-session').val()+'</span>&emsp;&emsp;'
-		+'<span class="span-time">'
-		+eventTime+'</span>&emsp;&emsp;'
-		+'<span class="span-venue">'
-		+$('#input-add-event-day-venue').val()+'</span>&nbsp;'
-		+'<i class="close fa fa-times red-text"></i>'
-		+'</div>');
+		var $newDay = $("<div class='chip-custom div-day'>"
+		+"Day "+"<span class='span-daynum'>"
+		+dayIndex+"</span>:&emsp;"
+		+"<span class='span-session'>"
+		+$("#input-add-event-day-session").val()+"</span>&emsp;&emsp;"
+		+"<span class='span-time'>"
+		+eventTime+"</span>&emsp;&emsp;"
+		+"<span class='span-venue'>"
+		+$("#input-add-event-day-venue").val()+"</span>&nbsp;"
+		+"<i class='close fa fa-times red-text'></i>"
+		+"</div>");
 
-		$('#container-new-day').append($newDay.on('click','.close',
+		$("#container-new-day").append($newDay.on("click",".close",
 			function () {
 				$(this).parent().remove();
 				dayCheck[dayIndex] = null;
 			}
 
 		));
-		$('#input-add-event-day-daynum').val("");
-		$('#input-add-event-day-session').val("");
-		$('#input-add-event-day-time').val("");
-		$('#input-add-event-day-venue').val("");
+		$("#input-add-event-day-daynum").val("");
+		$("#input-add-event-day-session").val("");
+		$("#input-add-event-day-time").val("");
+		$("#input-add-event-day-venue").val("");
 	});
 
-	//Add 'Select Image' btn listener
+	//Add "Select Image" btn listener
 	selectImageFile = null; 
-	$('#btn-add-event-select-image').click(function selectImage() {
+	$("#btn-add-event-select-image").click(function selectImage() {
 		
 		var selectImageInput = $("<input type='file'>");
-		selectImageInput.one('change',function (event) {
+		selectImageInput.one("change",function (event) {
 			selectImageFile = event.target.files[0];
-			if (selectImageFile.type.search('image/') === 0) {
-				$('#img-event-select-image-preview')
+			if (selectImageFile.type.search("image/") === 0) {
+				$("#img-event-select-image-preview")
 				.attr("src",URL.createObjectURL(selectImageFile))
 				.show();				
 			} else {
 
-				toastr.error('Error: File not an image');
+				toastr.error("Error: File not an image");
 				selectImageFile = null;
 			}
 		});
 		selectImageInput.click();		
 	});
 
-	//Add 'Save Event' btn listener
-	$('#btn-add-event-save').click(function saveEvent() {		
+	//Add "Save Event" btn listener
+	$("#btn-add-event-save").click(function saveEvent() {		
 		
 		var addEventData = {};
 		/*
@@ -415,7 +416,7 @@ function addNewEventModalInit() {
 		/**Validated...**/
 		
 		//Start the spinner
-		$('#spinner-add-event-upload').show();
+		$("#spinner-add-event-upload").show();
 
 		//Insert data to database
 		/**Image upload handled within the function**/
@@ -427,19 +428,18 @@ function addNewEventModalInit() {
 $(function () {
 
 	//Disabling preloader css
-	//$('#preload-css').get(0).disabled = true;
+	//$("#preload-css").get(0).disabled = true;
 
 	// Tooltips Initialization
-	$('[data-toggle~="tooltip"]').tooltip();	
+	$("[data-toggle~='tooltip']").tooltip();	
 	
 	//Edit event template
-	$editEventTemplate = $('#template-edit-events');
+	$editEventTemplate = $("#template-edit-events");
 
-	//Set up 'Add New Event'
+	//Set up "Add New Event"
 	addNewEventModalInit();
 	
 	//Display Event Cards
 	displayEvents();
 
-	//BugFix
 });	
