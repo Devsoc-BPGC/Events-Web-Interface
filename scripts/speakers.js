@@ -1,3 +1,5 @@
+//ESLINT rules 
+/*global toastr firebase*/
 var dbRef;
 var storageRef;
 var speakerEditData = new Object();

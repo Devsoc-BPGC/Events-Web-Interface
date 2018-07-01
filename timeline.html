@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Timeline</title>
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<!-- Bootstrap core CSS -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Material Design Bootstrap -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.4/css/mdb.min.css"
+	rel="stylesheet">	
+	<!-- Toaster -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+	<!-- Preloader -->
+	<!-- <link id="preload-css" href="styles/preloader.css" rel="stylesheet"> -->
+	<!-- Time Picker -->
+	<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0/css/tempusdominus-bootstrap-4.min.css" /> -->
+	<!-- Custom styles -->
+	<link href="styles/timeline.css" rel="stylesheet">
+
+</head>
+<body>
+
+	<!-- Header -->
+	<h1 class="text-center text-primary" style="margin-top: 2rem;">Timeline</h1>
+
+	<!-- Add New Event -->
+	<div class="container-fluid text-center" style="background-color: teal;">
+		<input id="btn-add-new-event" type="button" class="btn btn-primary"
+		value="Add New Event" data-toggle="modal" data-target="#modal-event">
+		<br>		
+	</div>
+
+	<!-- Edit Events -->
+	<div class="container-fluid text-center">
+		<div id="container-edit-events" class="row no-gutters">
+			<!-- Template for Edit Event Card -->
+			<template id="template-edit-events">
+				<div id="card-edit-event" class="col-md" style="float: left;">
+					<div class="card m-5" style="width: 22em;">
+						<!--Card image-->
+				        <div class="view overlay hm-white-slight">
+				            <img class="card-img-top" alt="">
+				            <a>
+				                <div class="mask flex-center rgba-white-slight waves-effect waves-light">				                	
+				                </div>
+				            </a>
+				        </div>
+				        <!--Card content-->
+				        <div class="card-body  rounded-bottom">
+				        	<!--Title-->		        	  					         
+				            <h4 class="event-name card-title">Name</h4>
+				            <!-- Subtitle -->
+    						<h5 class="event-type deep-purple-text">Event Type</h5>     		
+				            <hr class="hr-dark">
+				            <!--Text-->
+				            <p class="event-desc card-text h3-responsive">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+				            </p>				            
+				            <hr class="hr-dark">
+				            <h5 class="indigo-text text-left">Categories :</h5>
+				            <ul class="list-group list-group-flush event-category">
+        						
+    						</ul>
+    						<p></p>
+    						<h5 class="indigo-text text-left">Days :</h5>
+    						<ul class="list-group list-group-flush event-days">
+
+    						</ul>
+    						<p></p>				            
+				            <p class="card-text orange lighten-3" >
+				            	<span class="black-text">Rulebook URL :&nbsp;</span> 
+				            	<a class="event-rulebook" href=""></a>
+				        	</p>
+				        	<!--Footer -->
+				            <!-- Edit icon -->
+				     		<button class="edit-btn btn btn-warning waves-effect">
+				     			<i class="fa fa-pencil-square-o fa-lg" 
+				     			aria-hidden="true"></i>&nbsp;Edit
+				     		</button>
+				     		<!-- Delete icon -->
+				     		<button class="delete-btn btn btn-danger waves-effect">
+				     			<i class="fa fa-trash-o fa-lg" 
+				     			aria-hidden="true"></i>&nbsp;Delete
+				     		</button>
+				        </div>			        
+					</div>							
+				</div>
+			</template>			
+		</div>		
+	</div>
+	
+	<!-- Modals -->
+	<div class="modal fade" id="modal-event" tabindex="-1" role="dialog" 
+	aria-labelledby="label-event-modal" aria-hidden="true"
+	data-backdrop="static" data-keyboard="false">
+	    <div class="modal-dialog modal-lg" role="document">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h4 class="modal-title" id="header-event-modal">Add New Event</h4>
+	                <i id="btn-close-modal" type="button" class="close" 
+	                data-dismiss="modal" aria-label="Close">
+	                    <span class="fa fa-times" aria-hidden="true"></span>
+	                </i>
+	            </div>
+	            <div class="modal-body">
+	            	<form>
+		                <div class="md-form">
+	    					<input type="text" id="input-add-event-name" class="form-control">
+	    					<label for="input-add-event-name">Event Name</label>
+						</div>
+						<div class="md-form">
+	    					<input type="text" id="input-add-event-type" 
+	    					class="form-control">
+	    					<label for="input-add-event-type">Event Type</label>
+						</div>
+						<div class="md-form">                    		
+                    		<textarea type="text" id="input-add-event-desc" 
+	    					class="form-control md-textarea md-textarea-auto"
+	    					rows="2" style="padding-top: 2.3rem;"></textarea>   	
+                    		<label for="input-add-event-desc">Event Description</label>
+                		</div>
+                		<div class="md-form">                			
+	    					<input type="text" id="input-add-event-rulebook" 
+	    					class="form-control">
+	    					<label for="input-add-event-rulebook">Rulebook Url</label>
+						</div>
+						<!-- Categories -->
+						<div class="md-form">
+							<div class="h6">Category:</div>
+						</div>
+						<div class="md-form">
+							<i id="btn-add-category" class="fa fa-plus prefix green-text waves-light"></i>
+	    					<input type="text" id="input-add-event-category" 
+	    					class="form-control">
+	    					<label for="input-add-event-category">New Category</label>
+						</div>
+						
+						<div id="container-new-category" class="font-weight-bold">
+							<!-- Categories fill in here dynamically -->
+						</div>
+						<!-- /Categories -->
+						<!-- Days -->
+						<div class="md-form">
+							<div class="h6">Days:</div>
+						</div>						
+						<div class="form-row">
+							<div class="col-sm">
+								<div class="md-form form-group">
+									<i id="btn-add-day" class="fa fa-plus prefix green-text waves-light"></i>
+			    					<input type="text" id="input-add-event-day-daynum" 
+			    					class="form-control text-center">
+			    					<label for="input-add-event-daynum">Day</label>
+								</div>				
+							</div>								
+							<div class="col-sm">
+								<div class="md-form form-group">
+									<input type="text" id="input-add-event-day-session" 
+			    					class="form-control text-center">
+			    					<label for="input-add-event-session">Session</label>
+								</div>				
+							</div>
+							<div class="col-sm">
+								<div class="md-form form-group">
+			    					<input type="text" id="input-add-event-day-time" 
+			    					class="form-control text-center"  
+			    					title="Time will be padded to 4 digits"
+			    					data-placement="top" data-toggle="tooltip">
+			    					<label for="input-add-event-time">Time</label>
+								</div>				
+							</div>
+							<div class="col-sm">
+								<div class="md-form form-group">
+									<input type="text" id="input-add-event-day-venue" 
+			    					class="form-control text-center">
+			    					<label for="input-add-event-venue">Venue</label>
+								</div>				
+							</div>
+						</div>
+						
+						<div id="container-new-day" class="font-weight-bold">
+							<!-- Days fill in here dynamically -->
+						</div>
+						<!-- /Days -->
+					</form>
+	            </div>
+	            <div class="modal-footer justify-content-around">
+	            	<i id="spinner-add-event-upload" 
+	            	class="fa fa-spinner fa-pulse fa-3x spinner-upload"></i>
+	            	<button id="btn-add-event-select-image" type="button" 
+	                class="btn btn-indigo">Select Image</button>
+	                <img id ="img-event-select-image-preview"
+	                class="img-fluid z-depth-1 hoverable preview-img">
+	                <button id="btn-add-event-save" type="button" class="btn btn-success">Save Event</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>	
+
+	<!-- SCRIPTS -->
+	
+	<!-- JQuery -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- Toaster -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+	<!-- Preloader -->
+	<!-- <script id="preloader-js" src="scripts/preloader.js"></script> -->
+	<!-- Time Picker -->
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js">	
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0/js/tempusdominus-bootstrap-4.min.js"></script> -->
+	<!-- Bootstrap tooltips -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.13.0/umd/popper.min.js"></script>
+	<!-- Bootstrap core JavaScript -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	<!-- MDB core JavaScript -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.4/js/mdb.min.js"></script>
+	<!-- Firebase scripts -->
+	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-storage.js"></script>
+	<script>
+  		// Initialize Firebase
+  		var config = {
+    	apiKey: "AIzaSyBR3KJwIcHkWjTewBD3A2aaRmFeptykmtk",
+    	authDomain: "events-f6847.firebaseapp.com",
+    	databaseURL: "https://events-f6847.firebaseio.com",
+    	projectId: "events-f6847",
+    	storageBucket: "events-f6847.appspot.com",
+    	messagingSenderId: "1007225187624"
+  		};
+  		firebase.initializeApp(config);
+	</script>
+	<!--Include user defined scripts here-->
+	<script type="text/javascript" src="scripts/timeline.js"></script>	
+</body>
+</html>
