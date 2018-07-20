@@ -291,7 +291,7 @@ function addSponsorToDatabase() {
 	}
 
 	if (addLogofile == null) {
-		alert(Error : Upload a valid Sponsor Logo);
+		alert("Error : Upload a valid Sponsor Logo");
 		return;
 	}
 
