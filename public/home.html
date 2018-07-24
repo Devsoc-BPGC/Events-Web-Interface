@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="styles/snackbar.min.css">
+    <script async src="scripts/snackbar.min.js"></script> 
+    <link rel="stylesheet" type="text/css" href="styles/home.css">    
+    <title>Web Interface:Events</title>
+    
+    <!--NOTE: This part must come before any user defined scripts-->
+    
+    <!-- firebase-app.js is mandatory -->
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-app.js"></script>
+    
+    <!-- Include the others as required-->
+	<script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.3.0/firebase-storage.js"></script>
+    
+	<!-- initialize the SDK after all desired features are loaded -->
+    <script src="scripts/firebase_init.js"></script>
+
+    <!-- Validate access -->
+    <script src="scripts/firebase_auth.js"></script>
+
+    <!-- User defined scripts -->
+    <script defer type="text/javascript" src="scripts/home.js"></script>
+</head>
+<body>
+    <div class="container text-center">
+        <h1>Events Home</h1>
+        <h3><a href="sponsors.html">View sponsors</a></h3>
+        <h3><a href="speakers.html">View speakers</a></h3>
+        <h3><a href="timeline.html">View timeline</a></h3>
+        <br>
+        <br>
+        <input id="btn-user-log-out" type="button" class="btn btn-primary" value="Log Out">
+    </div>
+</body>
+</html>

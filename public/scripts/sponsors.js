@@ -34,12 +34,13 @@ $(document).ready(function () {
 
 			var template = "<div id='"+sponsorId+"' class='col-lg well-lg bg-1 div-mod '>"
 			+"<h3>Sponsor Name:<span class='sponsor-name'>"+sponsorName+"</span></h3>"
-			+"<h3>Sponsor Link:<span class='sponsor-link'>"+sponsorClickUrl+"<span></h3>"
+			+"<h3>Sponsor Link:<span class='sponsor-link1'>"+sponsorClickUrl+"</span></h3>"
 			+"<img src='"+sponsorLogo+"' class='img-responsive img-1 alt='"+sponsorName+"' '><br>"
 			+"<input type='button' class='btn btn-primary' value='Edit' onclick='editSponsor(this.parentNode.id,$(this))'>"
 			+"</div>";
-
+			
 			$("#sponsors-data").append($(template));
+
 		});
 			
 		/*This code must execute only the first time the value event triggers */
@@ -76,8 +77,8 @@ function editSponsor(parentId,btnRef) {
 	$originalTemplate = $("#"+parentId).clone();
 	$("#" +parentId+" .sponsor-name").replaceWith($("<input class='sponsor-name' type='text' value='"+
 							$("#"+parentId+" .sponsor-name").text()+"' >"));
-	$("#" +parentId+" .sponsor-link").replaceWith($("<input class='sponsor-link' type='text' value='"+
-							$("#"+parentId+" .sponsor-link").text()+"' >"));
+	$("#" +parentId+" .sponsor-link1").replaceWith($("<input class='sponsor-link1' type='text' value='"+
+							$("#"+parentId+" .sponsor-link1").text()+"' >"));
 	btnRef.val("Save");
 	$("#"+parentId+" img").after($("<br><input type='button' class='btn btn-secondary' value='Change Image'><br>")
 							.click(function () {
@@ -134,8 +135,8 @@ function saveSponsor(parentId,btnRef){
 		return;
 	}
 
-	if($("#"+parentId+" .sponsor-link").val() != ""){
-		sponsorEditData[parentId].sponsorClickUrl = $("#"+parentId+" .sponsor-link").val();
+	if($("#"+parentId+" .sponsor-link1").val() != ""){
+		sponsorEditData[parentId].sponsorClickUrl = $("#"+parentId+" .sponsor-link1").val();
 		
 	}
 	else {
