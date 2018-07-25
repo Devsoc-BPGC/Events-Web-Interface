@@ -6,8 +6,23 @@
   	<meta name="viewport" content="width=device-width, initial-scale=1">
   	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  	<link rel="stylesheet" type="text/css" href="styles/speakers.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="styles/snackbar.min.css">
+    <script async src="scripts/snackbar.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="styles/speakers.css">
+	<!-- firebase-app.js is mandatory -->
+	<!-- Include the others as required-->
+	<!--NOTE: This part must come before any user defined scripts-->
+	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-storage.js"></script>
+
+	<!-- Firebase initialization script-->
+	<script src="scripts/firebase_init.js"></script>
+
+	<!-- Validate access -->
+    <script src="scripts/firebase_auth.js"></script>  
 </head>
 <body>
 
@@ -54,25 +69,6 @@
 			value="Save" onclick="addSpeakerToDatabase()">
 		</div>
 	</div>
-
-	<!-- firebase-app.js is mandatory -->
-	<!-- Include the others as required-->
-	<!--NOTE: This part must come before any user defined scripts-->
-	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-database.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-storage.js"></script>
-	<script>
-  		// Initialize Firebase
-  		var config = {
-    	apiKey: "AIzaSyBR3KJwIcHkWjTewBD3A2aaRmFeptykmtk",
-    	authDomain: "events-f6847.firebaseapp.com",
-    	databaseURL: "https://events-f6847.firebaseio.com",
-    	projectId: "events-f6847",
-    	storageBucket: "events-f6847.appspot.com",
-    	messagingSenderId: "1007225187624"
-  		};
-  		firebase.initializeApp(config);
-	</script>
 
 	<!--Include user defined scripts here-->
 	<script type="text/javascript" src="scripts/speakers.js"></script>
