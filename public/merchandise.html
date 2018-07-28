@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Merchandise</title>
+	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="styles/snackbar.min.css">
+    <script async src="scripts/snackbar.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="styles/merchandise.css">
+	<!-- firebase-app.js is mandatory -->
+	<!-- Include the others as required-->
+	<!--NOTE: This part must come before any user defined scripts-->
+	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-auth.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-storage.js"></script>
+	
+	<!-- Firebase initialization script-->
+	<script src="scripts/firebase_init.js"></script>
+
+	<!-- Validate access -->
+    <script src="scripts/firebase_auth.js"></script>
+</head>
+
+<body>
+	
+	<h1 class="text-center text-primary">Our Merchandise</h1><br>	
+	<!--Edit Merchandise Items-->
+	<div class="container-fluid text-center div-mod ">
+		<!--'merchandise-data' div fills with the merchandise retrieved from firebase database in real-time--> 
+		<div id="merchandise-data" class="row div-mod">
+		</div>
+	</div>
+
+	<br>
+	<br>
+	<br>
+	
+	<!-- Add merchandise item-->
+
+	<div id="add-new-div" class="container div-mod well text-center" style="display: none;">
+		<input type="button" class="btn btn-primary" id="add-merchandise-btn" value="Add New Merchandise">
+		<br><br>
+		<div id="add-new-merchandise">
+			<label>Merchandise Image</label><br>
+			<input type="button" class="btn btn-primary" id="add-merchandise-image"
+			value="Add merchandise image" onclick="getMerchandiseImage()"><br><br>
+			<img id="add-merchandise-preview" class="img-responsive img-1" src="" alt="Merchandise Logo" style="display: none;"><br><br>
+			<div id="save-merchandise-progress-bar" class="progress" style="display: none;">
+  				<div id="uploader" class="progress-bar progress-bar-success" 
+  				role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">0%
+  				</div>
+		  	</div>
+			<br>
+			<input type="button" class="btn btn-primary" id="add-merchandise-save"
+			value="Save" onclick="addMerchandiseToDatabase()">
+			
+			<label>Merchandise Name</label><br>
+			<input type="text" id="add-merchandise-name"><br>
+			
+			<label>Merchandise Price</label><br>
+			<input type="text" id="add-merchandise-price"><br>
+			
+			<label>Merchandise Description</label><br>
+			<input type="text" id="add-merchandise-description"><br>
+			
+			<label>Merchandise Link</label><br>
+			<input type="text" id="add-merchandise-link"><br>
+		</div>
+	</div>
+
+	<!--Include user defined scripts here-->
+	<script type="text/javascript" src="scripts/merchandise.js"></script>
+</body>
+</html>
