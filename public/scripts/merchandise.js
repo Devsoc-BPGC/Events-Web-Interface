@@ -378,7 +378,7 @@ function addMerchandiseToDatabase() {
 					{
 
 						onClickUrl : addMerchandiseLink,
-						image : addMerchandiseImage,
+						imageUrl : addMerchandiseImage,
 						name : addMerchandiseName,
 						price: addMerchandisePrice,
 						desc: addMerchandiseDescription
