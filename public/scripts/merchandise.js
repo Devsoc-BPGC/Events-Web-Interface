@@ -76,119 +76,31 @@ $(document).ready(function () {
 
 });
 
-function editMerchandise(parentId,btnRef) {
+function changeImage(changeImageBtnRef,parentId) {
 
-	
-	$originalTemplate = $("#"+parentId).clone();
-	$("#" +parentId+" .merchandise-name").replaceWith($("<input class='merchandise-name' type='text' value='"+
-							$("#"+parentId+" .merchandise-name").text()+"' >"));
-	$("#" +parentId+" .merchandise-link").replaceWith($("<input class='merchandise-link' type='text' value='"+
-							$("#"+parentId+" .merchandise-link").text()+"' >"));
-
-	$("#" +parentId+" .merchandise-price").replaceWith($("<input class='merchandise-price' type='text' value='"+
-							$("#"+parentId+" .merchandise-price").text()+"' >"));
-
-	$("#" +parentId+" .merchandise-description").replaceWith($("<input class='merchandise-description' type='text' value='"+
-							$("#"+parentId+" .merchandise-description").text()+"' >"));
-	btnRef.val("Save");
-	$("#"+parentId+" .img").after($("<br><input type='button' class='btn btn-secondary' value='Change Image'><br>")
-							.click(function () {
-								//Change image
-								changeImage($(this),parentId);
-							}));
-
-	$("#"+parentId).append($("<div class='delete-merchandise'><br><br>"+
-	"<input type='button' class='btn btn-danger' value='Delete Merchandise'></div>")
-					.click(function () {
-						
-						var desertRef = firebase.storage().refFromURL(merchandiseEditData[parentId].merchandiseImage);
-						desertRef.delete().then(function () {
-							deleteFromDatabase();							
-						})
-						.catch(function (error) {
-							console.error(error);
-						});
-						function deleteFromDatabase() {
-							var dbRef = firebase.database().ref()
-								.child("merch")
-								.child(parentId);
-							dbRef.remove(function () {
-								delete merchandiseEditData[parentId];
-							});							
-						}
-					}));
-
-	$("#"+parentId).append($("<div class='cancel-btn'><br><input type='button' class='btn btn-danger' value='Cancel'></div>")
-					.click(function () {
-						
-						merchandiseEditData[parentId].fileLoc = null;
-						$("#"+parentId).replaceWith($originalTemplate);
-						
-						
-						
-					}));
-	btnRef.attr("onclick","saveMerchandise(this.parentNode.id,$(this))");
-
-}
-
-function saveMerchandise(parentId,btnRef){
-
-	
-	var storageRef = firebase.storage().ref("merchandise-image/");
-
-	//Check pre conditions
-	if($("#"+parentId+" .merchandise-name").val() != ""){
-		merchandiseEditData[parentId].merchandiseName = $("#"+parentId+" .merchandise-name").val();
+	$("#"+parentId+" .prog-bar").remove();
+ 	var inputFile = $("<input class='inputFile' type='file' >").click(function () {
+		changeImageBtnRef.after($("<div class='prog-bar'><br><br><div class='progress'>"+
+								"<div id='prog"+parentId+"' class='progress-bar progress-bar-success' "+
+								"role='progressbar' aria-valuenow='0' aria-valuemin='0' "+
+								"aria-valuemax='100' style='width:0%;'>0%"+
+								"</div></div></div>"));
 		
-	}
-	else {
-		alert("Error : Enter a valid Merchandise name");
-		return;
-	}
-
-	if($("#"+parentId+" .merchandise-link").val() != ""){
-		merchandiseEditData[parentId].merchandiseClickUrl = $("#"+parentId+" .merchandise-link").val();
-		
-	}
-	else {
-		alert("Error : Enter a valid Merchandise link");
-		return;
-	}
-
-	if($("#"+parentId+" .merchandise-price").val() > 0){
-		merchandiseEditData[parentId].merchandisePrice = $("#"+parentId+" .merchandise-price").val();
-		
-	}
-	else {
-		alert("Error : Enter a valid Merchandise link");
-		return;
-	}
-
-	if($("#"+parentId+" .merchandise-description").val() != ""){
-		merchandiseEditData[parentId].merchandiseDescription = $("#"+parentId+" .merchandise-description").val();
-		
-	}
-	else {
-		alert("Error : Enter a valid Merchandise Description");
-		return;
-	}
-
-	if(merchandiseEditData[parentId].fileLoc == null)
-	{
-		updateDatabase(parentId);
-	}
-	else{
-		//Delete pre-existing image image file from Firebase Storage
-		var desertRef = firebase.storage().refFromURL(merchandiseEditData[parentId].merchandiseImage);
-		//Discarding older image 
-		desertRef.delete().then(function () {
+		$(this).on("change",function (e) {
 			
-			uploadNewImage(parentId);
-
-		}).catch(function (error) {
-			console.error(error);
-		});		
-	}
+			// Get file
+			var file = e.target.files[0];
+			if(file.type.search("image/") === 0) {
+				$("#"+parentId+" img").attr("src",""+URL.createObjectURL(file));
+				merchandiseEditData[parentId].fileLoc = file;
+				
+			}
+			else {
+				alert("Error : File not an image");
+			}
+		});
+	});
+	inputFile.click();	
 }
 
 function uploadNewImage(parentId) {
@@ -248,7 +160,7 @@ function updateDatabase(parentId) {
 			console.error(errorArg);
 		} else {
 			//Data updated successfully
-			if(valueEventOccured == false) {
+			if(valueEventOccured === false) {
 				$("#"+parentId+" .cancel-btn").click();
 			}			
 		}
@@ -256,33 +168,124 @@ function updateDatabase(parentId) {
 	});
 }
 
+function editMerchandise(parentId,btnRef) {
 
-function changeImage(changeImageBtnRef,parentId) {
+	
+	$originalTemplate = $("#"+parentId).clone();
+	$("#" +parentId+" .merchandise-name").replaceWith($("<input class='merchandise-name' type='text' value='"+
+							$("#"+parentId+" .merchandise-name").text()+"' >"));
+	$("#" +parentId+" .merchandise-link").replaceWith($("<input class='merchandise-link' type='text' value='"+
+							$("#"+parentId+" .merchandise-link").text()+"' >"));
 
-	$("#"+parentId+" .prog-bar").remove();
- 	var inputFile = $("<input class='inputFile' type='file' >").click(function () {
-		changeImageBtnRef.after($("<div class='prog-bar'><br><br><div class='progress'>"+
-								"<div id='prog"+parentId+"' class='progress-bar progress-bar-success' "+
-								"role='progressbar' aria-valuenow='0' aria-valuemin='0' "+
-								"aria-valuemax='100' style='width:0%;'>0%"+
-								"</div></div></div>"));
-		
-		$(this).on("change",function (e) {
-			
-			// Get file
-			var file = e.target.files[0];
-			if(file.type.search("image/") === 0) {
-				$("#"+parentId+" img").attr("src",""+URL.createObjectURL(file));
-				merchandiseEditData[parentId].fileLoc = file;
-				
-			}
-			else {
-				alert("Error : File not an image");
-			}
-		});
-	});
-	inputFile.click();	
+	$("#" +parentId+" .merchandise-price").replaceWith($("<input class='merchandise-price' type='text' value='"+
+							$("#"+parentId+" .merchandise-price").text()+"' >"));
+
+	$("#" +parentId+" .merchandise-description").replaceWith($("<input class='merchandise-description' type='text' value='"+
+							$("#"+parentId+" .merchandise-description").text()+"' >"));
+	btnRef.val("Save");
+	$("#"+parentId+" .img").after($("<br><input type='button' class='btn btn-secondary' value='Change Image'><br>")
+							.click(function () {
+								//Change image
+								changeImage($(this),parentId);
+							}));
+
+	$("#"+parentId).append($("<div class='delete-merchandise'><br><br>"+
+	"<input type='button' class='btn btn-danger' value='Delete Merchandise'></div>")
+					.click(function () {
+						
+						var desertRef = firebase.storage().refFromURL(merchandiseEditData[parentId].merchandiseImage);
+						function deleteFromDatabase() {
+							var dbRef = firebase.database().ref()
+								.child("merch")
+								.child(parentId);
+							dbRef.remove(function () {
+								delete merchandiseEditData[parentId];
+							});
+						desertRef.delete().then(function () {
+							deleteFromDatabase();							
+						})
+						.catch(function (error) {
+							console.error(error);
+						});
+													
+						}
+					}));
+
+	$("#"+parentId).append($("<div class='cancel-btn'><br><input type='button' class='btn btn-danger' value='Cancel'></div>")
+					.click(function () {
+						
+						merchandiseEditData[parentId].fileLoc = null;
+						$("#"+parentId).replaceWith($originalTemplate);
+						
+						
+						
+					}));
+	btnRef.attr("onclick","saveMerchandise(this.parentNode.id,$(this))");
+
 }
+
+function saveMerchandise(parentId,btnRef){
+
+	
+	var storageRef = firebase.storage().ref("merchandise-image/");
+
+	//Check pre conditions
+	if($("#"+parentId+" .merchandise-name").val() !== ""){
+		merchandiseEditData[parentId].merchandiseName = $("#"+parentId+" .merchandise-name").val();
+		
+	}
+	else {
+		alert("Error : Enter a valid Merchandise name");
+		return;
+	}
+
+	if($("#"+parentId+" .merchandise-link").val() !== ""){
+		merchandiseEditData[parentId].merchandiseClickUrl = $("#"+parentId+" .merchandise-link").val();
+		
+	}
+	else {
+		alert("Error : Enter a valid Merchandise link");
+		return;
+	}
+
+	if($("#"+parentId+" .merchandise-price").val() > 0){
+		merchandiseEditData[parentId].merchandisePrice = $("#"+parentId+" .merchandise-price").val();
+		
+	}
+	else {
+		alert("Error : Enter a valid Merchandise link");
+		return;
+	}
+
+	if($("#"+parentId+" .merchandise-description").val() !== ""){
+		merchandiseEditData[parentId].merchandiseDescription = $("#"+parentId+" .merchandise-description").val();
+		
+	}
+	else {
+		alert("Error : Enter a valid Merchandise Description");
+		return;
+	}
+
+	if(merchandiseEditData[parentId].fileLoc == null)
+	{
+		updateDatabase(parentId);
+	}
+	else{
+		//Delete pre-existing image image file from Firebase Storage
+		var desertRef = firebase.storage().refFromURL(merchandiseEditData[parentId].merchandiseImage);
+		//Discarding older image 
+		desertRef.delete().then(function () {
+			
+			uploadNewImage(parentId);
+
+		}).catch(function (error) {
+			console.error(error);
+		});		
+	}
+}
+
+
+
 
 var addImagefile = null;
 
