@@ -183,7 +183,7 @@ function editMerchandise(parentId,btnRef) {
 	$("#" +parentId+" .merchandise-description").replaceWith($("<input class='merchandise-description' type='text' value='"+
 							$("#"+parentId+" .merchandise-description").text()+"' >"));
 	btnRef.val("Save");
-	$("#"+parentId+" .img").after($("<br><input type='button' class='btn btn-secondary' value='Change Image'><br>")
+	$("#"+parentId+" img").after($("<br><input type='button' class='btn btn-secondary' value='Change Image'><br>")
 							.click(function () {
 								//Change image
 								changeImage($(this),parentId);
