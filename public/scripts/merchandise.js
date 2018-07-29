@@ -91,7 +91,7 @@ function editMerchandise(parentId,btnRef) {
 	$("#" +parentId+" .merchandise-description").replaceWith($("<input class='merchandise-description' type='text' value='"+
 							$("#"+parentId+" .merchandise-description").text()+"' >"));
 	btnRef.val("Save");
-	$("#"+parentId+" .image").after($("<br><input type='button' class='btn btn-secondary' value='Change Image'><br>")
+	$("#"+parentId+" .img").after($("<br><input type='button' class='btn btn-secondary' value='Change Image'><br>")
 							.click(function () {
 								//Change image
 								changeImage($(this),parentId);
@@ -110,7 +110,7 @@ function editMerchandise(parentId,btnRef) {
 						});
 						function deleteFromDatabase() {
 							var dbRef = firebase.database().ref()
-								.child("merchandises")
+								.child("merch")
 								.child(parentId);
 							dbRef.remove(function () {
 								delete merchandiseEditData[parentId];
@@ -236,7 +236,7 @@ function updateDatabase(parentId) {
 	dbRef.child(parentId).set({
 
 		onClickUrl : merchandiseEditData[parentId].merchandiseClickUrl,
-		image : merchandiseEditData[parentId].merchandiseImage,
+		imageUrl : merchandiseEditData[parentId].merchandiseImage,
 		name : merchandiseEditData[parentId].merchandiseName,
 		price: merchandiseEditData[parentId].merchandisePrice ,
 		desc: merchandiseEditData[parentId].merchandiseDescription
