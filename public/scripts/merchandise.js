@@ -200,7 +200,7 @@ function editMerchandise(parentId,btnRef) {
 								.child(parentId);
 							dbRef.remove(function () {
 								delete merchandiseEditData[parentId];
-							});
+							})};
 						desertRef.delete().then(function () {
 							deleteFromDatabase();							
 						})
@@ -208,7 +208,6 @@ function editMerchandise(parentId,btnRef) {
 							console.error(error);
 						});
 													
-						}
 					}));
 
 	$("#"+parentId).append($("<div class='cancel-btn'><br><input type='button' class='btn btn-danger' value='Cancel'></div>")
