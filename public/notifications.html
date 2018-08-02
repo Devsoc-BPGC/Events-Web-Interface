@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<script src="scripts/firebase_auth.js"></script>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -15,19 +14,90 @@
 	rel="stylesheet">	
 	<!-- Toaster -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+	<!-- Snackbar -->
+	<link rel="stylesheet" href="styles/snackbar.min.css">
+    <script async src="scripts/snackbar.min.js"></script>
 	<!-- Custom styles -->
 	<link href="styles/notifications.css" rel="stylesheet">
 
-	<!-- Validate access -->
-    <script src="scripts/firebase_auth.js"></script>
 </head>
 <body>
 
+	<!-- Header -->
+	<div class="container">
+		<h1 class="text-center text-primary" style="margin-top: 2rem;">Send Notifications</h1>
+	</div>
 
+	<!-- Material form contact -->	
+	<div class="card mx-auto my-5 " style="width: 22rem;">
 
+		<!-- Card header -->
+		<h5 class="card-header info-color white-text text-center py-4">
+			<strong>New Notification</strong>
+		</h5>
 
+		<!-- Card content -->
+		<div class="card-body px-lg-5 pt-0">
+			
+			<!-- Form -->
+			<form class="text-center" style="color: #757575;">
 
+				<!-- Title -->
+				<div class="md-form mt-4">
+					<input type="text" id="input-notification-title" class="form-control">
+					<label for="input-notification-title">Title</label>
+				</div>				
 
+				<!-- Message -->
+				<div class="md-form">
+					<textarea type="text" id="input-notification-message" class="form-control md-textarea md-textarea-auto"
+					rows="2"></textarea>
+					<label for="input-notification-message">Message</label>
+				</div>
+
+				<!-- Image button-->
+				<button id="btn-upload-image" class="btn btn-purple btn-block z-depth-0 my-4 waves-effect"
+				type="button">Upload Image<br>(Optional)</button>
+				
+				<!-- Image Preview -->
+				<img id="img-preview" class="img-fluid z-depth-1 hoverable" src="">
+
+				<!-- Send button -->
+				<button id="btn-send" class="btn btn-indigo btn-block z-depth-0 my-4 waves-effect" type="button">Send</button>
+
+			</form>			
+		</div>
+	</div>	
+	<!-- Modal -->
+	<div class="modal fade" id="modal-confirm" tabindex="-1" role="dialog"
+	aria-labelledby="modal-heading" aria-hidden="true"
+	data-backdrop="static" data-keyboard="false">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal-heading">Upload Notification</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div id="alert-image-not-selected" class="alert alert-danger" role="alert">
+						No image will be uploaded.<br>
+						Confirm notification?
+					</div>
+					<div id="alert-image-selected" class="alert alert-primary" role="alert">
+						Confirm new notification?
+					 </div>
+				</div>
+				<div class="modal-footer">
+					<span id="spinner-upload"
+					class="fa fa-spinner fa-pulse fa-3x spinner-upload"></span>
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+					<button id="btn-send-confirm" type="button" class="btn btn-dark-green">Send Notification</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
 
@@ -45,21 +115,16 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.4/js/mdb.min.js"></script>
 	<!-- Firebase scripts -->
 	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-auth.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-database.js"></script>
 	<script src="https://www.gstatic.com/firebasejs/5.0.4/firebase-storage.js"></script>
-	<script>
-  		// Initialize Firebase
-  		var config = {
-    	apiKey: "AIzaSyBR3KJwIcHkWjTewBD3A2aaRmFeptykmtk",
-    	authDomain: "events-f6847.firebaseapp.com",
-    	databaseURL: "https://events-f6847.firebaseio.com",
-    	projectId: "events-f6847",
-    	storageBucket: "events-f6847.appspot.com",
-    	messagingSenderId: "1007225187624"
-  		};
-  		firebase.initializeApp(config);
-	</script>
+
+	<!-- Firebase initialization script-->
+	<script src="scripts/firebase_init.js"></script>
+
+	<!-- Validate access -->
+    <script type="text/javascript" src="scripts/firebase_auth.js"></script>
 	<!--Include user defined scripts here-->
-	<script type="text/javascript" src="scripts/timeline.js"></script>	
+	<script type="text/javascript" src="scripts/notifications.js"></script>	
 </body>
 </html>
